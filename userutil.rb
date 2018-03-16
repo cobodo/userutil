@@ -15,9 +15,11 @@ Plugin.create(:userutil) do
 
   @user_list = []
   Delayer.new {
-    Service.primary.followings(cache: true).next { |users|
-      @user_list = users.compact.dup
-    }
+    if Service.primary
+      Service.primary.followings(cache: true).next { |users|
+        @user_list = users.compact.dup
+      }
+    end
 
     Enumerator.new {|y|
       Plugin.filtering(:worlds, y)
